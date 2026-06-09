@@ -1,18 +1,16 @@
-import { LogOut } from 'lucide-react'
-
-function Navbar({ onLogout }) {
+function Navbar({ user, onLogout }) {
   return (
     <header className="navbar">
       <div>
-        <h1>dotDashboard</h1>
-        <p>IoT monitoring dashboard for dotWatch devices</p>
+        <h1>Dashboard</h1>
+        <p>Welcome, {user?.email || "User"}</p>
       </div>
-      <button className="ghost-button" onClick={onLogout}>
-        <LogOut size={18} />
+
+      <button type="button" className="ghost-button" onClick={onLogout}>
         Logout
       </button>
     </header>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

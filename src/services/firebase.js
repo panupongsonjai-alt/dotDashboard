@@ -1,5 +1,12 @@
 import { initializeApp } from 'firebase/app'
-import { getDatabase, ref, onValue, set, push } from 'firebase/database'
+import { getAuth } from 'firebase/auth'
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+} from 'firebase/database'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,10 +19,13 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
+
+export const auth = getAuth(app)
 export const database = getDatabase(app)
 
 export const listenDeviceData = (deviceId, callback) => {
   const deviceRef = ref(database, `devices/${deviceId}`)
+
   return onValue(deviceRef, (snapshot) => {
     callback(snapshot.val())
   })
@@ -34,3 +44,5 @@ export const addSensorLog = async (deviceId, payload) => {
     createdAt: Date.now(),
   })
 }
+
+export default app

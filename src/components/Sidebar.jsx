@@ -1,39 +1,35 @@
-import { Gauge, Cpu, Settings } from 'lucide-react'
+function Sidebar({ page, setPage }) {
+  const menus = [
+    { id: "dashboard", label: "Dashboard", icon: "📊" },
+    { id: "devices", label: "Devices", icon: "📡" },
+    { id: "settings", label: "Settings", icon: "⚙️" },
+  ];
 
-const menuItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: Gauge },
-  { id: 'devices', label: 'Devices', icon: Cpu },
-  { id: 'settings', label: 'Settings', icon: Settings },
-]
-
-function Sidebar({ activePage, onNavigate }) {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <span className="brand-dot" />
+        <span className="brand-dot"></span>
         <div>
-          <strong>dotWatch</strong>
-          <small>Device Console</small>
+          <strong>dotDashboard</strong>
+          <small>IoT Monitoring</small>
         </div>
       </div>
 
       <nav className="menu">
-        {menuItems.map((item) => {
-          const Icon = item.icon
-          return (
-            <button
-              key={item.id}
-              className={activePage === item.id ? 'menu-item active' : 'menu-item'}
-              onClick={() => onNavigate(item.id)}
-            >
-              <Icon size={18} />
-              {item.label}
-            </button>
-          )
-        })}
+        {menus.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={`menu-item ${page === item.id ? "active" : ""}`}
+            onClick={() => setPage(item.id)}
+          >
+            <span>{item.icon}</span>
+            {item.label}
+          </button>
+        ))}
       </nav>
     </aside>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;

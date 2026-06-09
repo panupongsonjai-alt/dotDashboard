@@ -12,12 +12,17 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: #eef3f8;
 }
 
 button,
 input,
 select {
   font: inherit;
+}
+
+button {
+  cursor: pointer;
 }
 
 .layout {
@@ -45,6 +50,7 @@ select {
   border-radius: 14px;
   background: linear-gradient(135deg, #38bdf8, #22c55e);
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .brand strong,
@@ -72,7 +78,6 @@ select {
   padding: 12px 14px;
   color: #cbd5e1;
   background: transparent;
-  cursor: pointer;
   text-align: left;
 }
 
@@ -85,6 +90,7 @@ select {
 .main {
   flex: 1;
   padding: 28px;
+  min-width: 0;
 }
 
 .navbar {
@@ -261,10 +267,18 @@ label {
 
 input,
 select {
+  width: 100%;
   border: 1px solid #cbd5e1;
   border-radius: 14px;
   padding: 12px 14px;
   background: white;
+  color: #102033;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.18);
+  border-color: #2563eb;
 }
 
 .primary-button,
@@ -276,7 +290,6 @@ select {
   border: 0;
   border-radius: 14px;
   padding: 12px 16px;
-  cursor: pointer;
   font-weight: 800;
 }
 
@@ -286,9 +299,17 @@ select {
   margin-top: 18px;
 }
 
+.primary-button:hover {
+  background: #1d4ed8;
+}
+
 .ghost-button {
   color: #0f172a;
   background: white;
+}
+
+.ghost-button:hover {
+  background: #e2e8f0;
 }
 
 .full {
@@ -313,17 +334,30 @@ select {
   margin-bottom: 24px;
 }
 
+.login-card .brand {
+  margin-bottom: 0;
+}
+
 .login-card h1 {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
 }
 
 .login-card p {
   color: #64748b;
-  margin-bottom: 24px;
+  margin: 0 0 24px;
 }
 
 .login-card label {
   margin-bottom: 14px;
+}
+
+.loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2563eb;
 }
 
 @media (max-width: 860px) {
