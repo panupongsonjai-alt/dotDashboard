@@ -1,43 +1,48 @@
-import { Moon, Sun, LogOut, Bell, Search } from "lucide-react";
+import { Moon, Sun, LogOut } from "lucide-react";
 
 function Navbar({ user, onLogout, theme, setTheme }) {
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  const displayName =
+    user?.displayName ||
+    user?.email?.split("@")[0] ||
+    "User";
+
   return (
     <header className="top-header">
-      <div className="header-search">
-        <Search size={18} />
-        <input placeholder="Search or type command..." />
+      <div className="header-user">
+        <div className="user-avatar">
+          {displayName.charAt(0).toUpperCase()}
+        </div>
+
+        <div className="user-info">
+          <small>{user?.email}</small>
+        </div>
       </div>
 
       <div className="header-actions">
-        <button type="button" className="icon-button" onClick={toggleTheme}>
-          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+        <button
+          type="button"
+          className="icon-button"
+          onClick={toggleTheme}
+          title="Toggle Theme"
+        >
+          {theme === "dark" ? (
+            <Sun size={18} />
+          ) : (
+            <Moon size={18} />
+          )}
         </button>
-
-        <button type="button" className="icon-button">
-          <Bell size={18} />
-        </button>
-
-        <div className="user-box">
-          <div className="user-avatar">
-            {user?.email?.charAt(0).toUpperCase() || "U"}
-          </div>
-
-          <div className="user-info">
-            <strong>{user?.displayName || "dotWatch User"}</strong>
-            <small>{user?.email}</small>
-          </div>
-        </div>
 
         <button
           type="button"
-          className="icon-button logout-icon"
+          className="logout-button"
           onClick={onLogout}
         >
           <LogOut size={18} />
+          Logout
         </button>
       </div>
     </header>

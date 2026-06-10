@@ -696,3 +696,63 @@ select:focus {
     width: 100%;
   }
 }
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info strong {
+  color: white;
+  font-size: 14px;
+}
+
+.user-info small {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.logout-button {
+  height: 42px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 14px;
+
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-button:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+@media (max-width: 560px) {
+  .user-info {
+    display: none;
+  }
+}
