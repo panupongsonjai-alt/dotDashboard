@@ -1,4 +1,21 @@
+import { useState, useEffect } from "react";
+
 function Settings() {
+  const [projectName, setProjectName] = useState("");
+
+  useEffect(() => {
+    const savedName =
+      localStorage.getItem("projectName") || "dotWatch";
+
+    setProjectName(savedName);
+  }, []);
+
+  const handleSave = () => {
+    localStorage.setItem("projectName", projectName);
+
+    alert("บันทึกชื่อโปรเจกต์เรียบร้อย");
+  };
+
   return (
     <div className="page">
       <section className="panel settings-panel">
@@ -9,8 +26,14 @@ function Settings() {
 
         <div className="form-grid">
           <label>
-            Device Group
-            <input placeholder="dotwatch-devices" />
+            Project Name
+            <input
+              value={projectName}
+              onChange={(e) =>
+                setProjectName(e.target.value)
+              }
+              placeholder="dotWatch"
+            />
           </label>
 
           <label>
@@ -23,10 +46,15 @@ function Settings() {
           </label>
         </div>
 
-        <button className="primary-button">Save Settings</button>
+        <button
+          className="primary-button"
+          onClick={handleSave}
+        >
+          Save Settings
+        </button>
       </section>
     </div>
-  )
+  );
 }
 
-export default Settings
+export default Settings;

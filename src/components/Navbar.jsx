@@ -1,6 +1,16 @@
+import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
 function Navbar({ user, onLogout, theme, setTheme }) {
+  const [projectName, setProjectName] = useState("dotWatch");
+
+  useEffect(() => {
+    const name =
+      localStorage.getItem("projectName") || "dotWatch";
+
+    setProjectName(name);
+  }, []);
+
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
@@ -8,7 +18,7 @@ function Navbar({ user, onLogout, theme, setTheme }) {
   return (
     <header className="navbar">
       <div>
-        <h1>dotWatch</h1>
+        <h1>{projectName}</h1>
         <p>{user?.email}</p>
       </div>
 
@@ -19,10 +29,18 @@ function Navbar({ user, onLogout, theme, setTheme }) {
           onClick={toggleTheme}
           title={theme === "dark" ? "Light mode" : "Dark mode"}
         >
-          {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+          {theme === "dark" ? (
+            <Sun size={20} />
+          ) : (
+            <Moon size={20} />
+          )}
         </button>
 
-        <button type="button" className="ghost-button" onClick={onLogout}>
+        <button
+          type="button"
+          className="ghost-button"
+          onClick={onLogout}
+        >
           Logout
         </button>
       </div>

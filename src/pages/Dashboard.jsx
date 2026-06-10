@@ -9,6 +9,7 @@ import {
 
 function Dashboard() {
   const [devices, setDevices] = useState([])
+  const [projectName, setProjectName] = useState('dotWatch')
 
   useEffect(() => {
     const user = auth.currentUser
@@ -21,6 +22,13 @@ function Dashboard() {
     )
 
     return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    const name =
+      localStorage.getItem('projectName') || 'dotWatch'
+
+    setProjectName(name)
   }, [])
 
   const onlineCount = devices.filter(
@@ -47,7 +55,7 @@ function Dashboard() {
 
         <div className="summary-card">
           <span>Project</span>
-          <strong>dotWatch</strong>
+          <strong>{projectName}</strong>
         </div>
       </section>
 
