@@ -7,6 +7,7 @@ import {
   set,
   push,
   remove,
+  update,
   query,
   orderByChild,
   startAt,
@@ -109,6 +110,12 @@ export const listenUserDevices = (uid, callback) => {
 
 export const deleteUserDevice = async (uid, deviceId) => {
   return remove(ref(database, `users/${uid}/devices/${deviceId}`))
+}
+
+export const updateDeviceName = async (uid, deviceId, name) => {
+  return update(ref(database, `users/${uid}/devices/${deviceId}`), {
+    name: name.trim(),
+  })
 }
 
 export default app

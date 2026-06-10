@@ -5,19 +5,20 @@ import {
   addUserDevice,
   listenUserDevices,
   deleteUserDevice,
+  updateDeviceName,
 } from '../services/firebase'
 
-function Devices() {
+function Device() {
   const [devices, setDevices] = useState([])
   const [deviceName, setDeviceName] = useState('')
+  const [editingDeviceId, setEditingDeviceId] = useState(null)
+  const [editingName, setEditingName] = useState('')
 
   useEffect(() => {
     const user = auth.currentUser
-
     if (!user) return
 
     const unsubscribe = listenUserDevices(user.uid, setDevices)
-
     return () => unsubscribe()
   }, [])
 
@@ -32,8 +33,26 @@ function Devices() {
     const name = deviceName.trim() || `dotWatch ${devices.length + 1}`
 
     await addUserDevice(user.uid, name)
-
     setDeviceName('')
+  }
+
+  const handleSaveDeviceName = async (deviceId) => {
+    const user = auth.currentUser
+
+    if (!user) {
+      alert('กรุณาเข้าสู่ระบบก่อน')
+      return
+    }
+
+    if (!editingName.trim()) {
+      alert('กรุณากรอกชื่อ Device')
+      return
+    }
+
+    await updateDeviceName(user.uid, deviceId, editingName)
+
+    setEditingDeviceId(null)
+    setEditingName('')
   }
 
   const handleDeleteDevice = async (deviceId) => {
@@ -58,57 +77,96 @@ function Devices() {
           <p>จัดการและตรวจสอบอุปกรณ์ dotWatch ทั้งหมด</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <div className="device-add-row">
           <input
             type="text"
             placeholder="ชื่อ Device เช่น dotWatch 01"
             value={deviceName}
             onChange={(e) => setDeviceName(e.target.value)}
-            style={{
-              padding: '10px',
-              borderRadius: '8px',
-              border: '1px solid #ccc',
-              minWidth: '260px',
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleAddDevice()
             }}
           />
 
           <button
+            className="primary-button device-add-btn"
             onClick={handleAddDevice}
-            style={{
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: 'none',
-              background: '#2563eb',
-              color: '#fff',
-              cursor: 'pointer',
-            }}
           >
             + เพิ่ม Device
           </button>
         </div>
 
         {devices.length === 0 ? (
-          <p>ยังไม่มี Device</p>
+          <div className="empty-device">
+            <h3>ยังไม่มี Device</h3>
+            <p>เพิ่มอุปกรณ์ dotWatch เพื่อเริ่มติดตามข้อมูล Sensor</p>
+          </div>
         ) : (
           <div className="device-grid">
             {devices.map((device) => (
-              <div key={device.id} style={{ position: 'relative' }}>
+              <div key={device.id} className="device-list-item">
+                {editingDeviceId === device.id && (
+                  <div className="device-edit-row">
+                    <input
+                      className="device-edit-input"
+                      type="text"
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      placeholder="ชื่อ Device"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSaveDeviceName(device.id)
+                        }
+
+                        if (e.key === 'Escape') {
+                          setEditingDeviceId(null)
+                          setEditingName('')
+                        }
+                      }}
+                    />
+
+                    <button
+                      className="save-btn"
+                      onClick={() => handleSaveDeviceName(device.id)}
+                    >
+                      บันทึก
+                    </button>
+
+                    <button
+                      className="cancel-btn"
+                      onClick={() => {
+                        setEditingDeviceId(null)
+                        setEditingName('')
+                      }}
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
+                )}
+
                 <DeviceCard device={device} />
 
-                <button
-                  onClick={() => handleDeleteDevice(device.id)}
-                  style={{
-                    marginTop: '8px',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: '#dc2626',
-                    color: '#fff',
-                    cursor: 'pointer',
-                  }}
-                >
-                  ลบ Device
-                </button>
+                <div className="device-actions">
+                  {editingDeviceId !== device.id && (
+                    <button
+                      className="rename-btn"
+                      onClick={() => {
+                        setEditingDeviceId(device.id)
+                        setEditingName(device.name || '')
+                      }}
+                    >
+                      แก้ไขชื่อ
+                    </button>
+                  )}
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDeleteDevice(device.id)}
+                  >
+                    ลบ Device
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -118,4 +176,4 @@ function Devices() {
   )
 }
 
-export default Devices
+export default Device
