@@ -15,6 +15,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [page, setPage] = useState("dashboard");
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -24,6 +25,11 @@ function App() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -43,12 +49,17 @@ function App() {
       <Sidebar page={page} setPage={setPage} />
 
       <main className="main">
-        <Navbar user={user} onLogout={handleLogout} />
+        <Navbar
+          user={user}
+          onLogout={handleLogout}
+          theme={theme}
+          setTheme={setTheme}
+        />
 
         {page === "dashboard" && <Dashboard />}
         {page === "devices" && <Devices />}
-        {page === "settings" && <Settings />}
         {page === "profile" && <Profile />}
+        {page === "settings" && <Settings />}
       </main>
     </div>
   );

@@ -4,18 +4,15 @@ function Settings() {
       <section className="panel settings-panel">
         <div className="section-title">
           <h2>Settings</h2>
-          <p>ตั้งค่าการเชื่อมต่อ Firebase และข้อมูลโปรเจกต์</p>
+          <p>ตั้งค่าระบบและข้อมูลโปรเจกต์</p>
         </div>
 
         <div className="form-grid">
           <label>
-            Firebase Database URL
-            <input placeholder="https://your-project.firebaseio.com" />
-          </label>
-          <label>
             Device Group
             <input placeholder="dotwatch-devices" />
           </label>
+
           <label>
             Refresh Interval
             <select defaultValue="5000">
