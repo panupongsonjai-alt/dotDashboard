@@ -10,6 +10,7 @@ import {
   query,
   orderByChild,
   startAt,
+  endAt,
   limitToLast,
 } from 'firebase/database'
 
@@ -36,15 +37,19 @@ export const listenDeviceData = (uid, deviceId, callback) => {
   })
 }
 
-export const listenDeviceHistory24h = (uid, deviceId, callback) => {
-  const now = Date.now()
-  const last24h = now - 24 * 60 * 60 * 1000
-
+export const listenDeviceHistoryByDate = (
+  uid,
+  deviceId,
+  startTime,
+  endTime,
+  callback
+) => {
   const historyRef = query(
     ref(database, `users/${uid}/deviceHistory/${deviceId}`),
     orderByChild('createdAt'),
-    startAt(last24h),
-    limitToLast(300)
+    startAt(startTime),
+    endAt(endTime),
+    limitToLast(3000)
   )
 
   return onValue(historyRef, (snapshot) => {
