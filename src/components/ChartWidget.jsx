@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from 'recharts'
 
 import {
@@ -33,10 +32,7 @@ function getDateRange(range) {
     const end = new Date()
     end.setHours(23, 59, 59, 999)
 
-    return {
-      startTime: start.getTime(),
-      endTime: end.getTime(),
-    }
+    return { startTime: start.getTime(), endTime: end.getTime() }
   }
 
   if (range === 'yesterday') {
@@ -47,10 +43,7 @@ function getDateRange(range) {
     const end = new Date(start)
     end.setHours(23, 59, 59, 999)
 
-    return {
-      startTime: start.getTime(),
-      endTime: end.getTime(),
-    }
+    return { startTime: start.getTime(), endTime: end.getTime() }
   }
 
   if (range === '7d') {
@@ -85,7 +78,7 @@ function formatXAxis(value, range) {
 
   return date.toLocaleDateString('th-TH', {
     day: '2-digit',
-    month: '2-digit',
+    month: 'short',
   })
 }
 
@@ -94,7 +87,7 @@ function makeDayTicks(startTime, endTime) {
   const start = new Date(startTime)
   start.setHours(0, 0, 0, 0)
 
-  for (let hour = 0; hour <= 23; hour += 3) {
+  for (let hour = 0; hour <= 21; hour += 3) {
     const tick = new Date(start)
     tick.setHours(hour, 0, 0, 0)
     ticks.push(tick.getTime())
@@ -127,6 +120,8 @@ function ChartWidget() {
     return undefined
   }, [timeRange, startTime, endTime])
 
+  const latestData = chartData[chartData.length - 1]
+
   useEffect(() => {
     const user = auth.currentUser
     if (!user) return
@@ -152,12 +147,14 @@ function ChartWidget() {
       startTime,
       endTime,
       (logs) => {
-        const points = logs.map((item) => ({
-          timestamp: Number(item.createdAt),
-          datetime: new Date(item.createdAt).toLocaleString('th-TH'),
-          temperature: Number(item.temperature ?? 0),
-          humidity: Number(item.humidity ?? 0),
-        }))
+        const points = logs
+          .map((item) => ({
+            timestamp: Number(item.createdAt),
+            datetime: new Date(item.createdAt).toLocaleString('th-TH'),
+            temperature: Number(item.temperature ?? 0),
+            humidity: Number(item.humidity ?? 0),
+          }))
+          .sort((a, b) => a.timestamp - b.timestamp)
 
         setChartData(points)
       }
@@ -205,6 +202,24 @@ function ChartWidget() {
             {timeRange === 'today' && ' วันนี้ 00:00 - 23:59'}
             {timeRange === 'yesterday' && ' เมื่อวาน 00:00 - 23:59'}
           </p>
+
+          <div className="sensor-stats light-stats">
+            <div>
+              <p>Temperature</p>
+              <strong>
+                {latestData ? latestData.temperature.toFixed(1) : '--'}°C
+              </strong>
+              <span>Realtime</span>
+            </div>
+
+            <div>
+              <p>Humidity</p>
+              <strong>
+                {latestData ? latestData.humidity.toFixed(1) : '--'}%
+              </strong>
+              <span>Realtime</span>
+            </div>
+          </div>
         </div>
 
         <div className="chart-toolbar">
@@ -259,11 +274,27 @@ function ChartWidget() {
       ) : (
         <div className="realtime-chart improved-chart">
           <ResponsiveContainer width="100%" height={330}>
-            <LineChart
+            <AreaChart
               data={chartData}
-              margin={{ top: 20, right: 30, left: 8, bottom: 8 }}
+              margin={{ top: 20, right: 24, left: 0, bottom: 8 }}
             >
-              <CartesianGrid strokeDasharray="4 4" vertical={false} />
+              <defs>
+                <linearGradient id="temperatureFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ef4444" stopOpacity={0.18} />
+                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                </linearGradient>
+
+                <linearGradient id="humidityFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.16} />
+                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+
+              <CartesianGrid
+                stroke="#e2e8f0"
+                strokeDasharray="6 6"
+                opacity={0.9}
+              />
 
               <XAxis
                 dataKey="timestamp"
@@ -273,48 +304,62 @@ function ChartWidget() {
                 tickFormatter={(value) => formatXAxis(value, timeRange)}
                 tickLine={false}
                 axisLine={false}
-                minTickGap={24}
+                minTickGap={26}
+                stroke="#64748b"
+                fontSize={12}
               />
 
               <YAxis
                 tickLine={false}
                 axisLine={false}
-                width={36}
+                width={42}
+                stroke="#64748b"
+                fontSize={12}
               />
 
               <Tooltip
+                cursor={{
+                  stroke: '#94a3b8',
+                  strokeDasharray: '4 4',
+                }}
                 contentStyle={{
-                  borderRadius: 14,
+                  background: '#ffffff',
                   border: '1px solid #e2e8f0',
-                  boxShadow: '0 12px 30px rgba(15, 23, 42, 0.12)',
+                  borderRadius: 12,
+                  color: '#0f172a',
+                  boxShadow: '0 16px 40px rgba(15,23,42,0.14)',
+                }}
+                labelStyle={{
+                  color: '#475569',
+                  fontWeight: 600,
                 }}
                 labelFormatter={(value) =>
                   new Date(value).toLocaleString('th-TH')
                 }
               />
 
-              <Legend />
-
-              <Line
+              <Area
                 type="monotone"
                 dataKey="temperature"
                 name="Temperature °C"
                 stroke="#ef4444"
-                strokeWidth={3}
+                fill="url(#temperatureFill)"
+                strokeWidth={2.5}
                 dot={false}
-                activeDot={{ r: 6 }}
+                activeDot={{ r: 5 }}
               />
 
-              <Line
+              <Area
                 type="monotone"
                 dataKey="humidity"
                 name="Humidity %"
                 stroke="#2563eb"
-                strokeWidth={3}
+                fill="url(#humidityFill)"
+                strokeWidth={2.5}
                 dot={false}
-                activeDot={{ r: 6 }}
+                activeDot={{ r: 5 }}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       )}

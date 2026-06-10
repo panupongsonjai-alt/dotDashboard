@@ -825,3 +825,136 @@ select:focus {
     padding: 10px;
   }
 }
+
+.sensor-chart-card {
+  background: #223143;
+  border: 1px solid #31455c;
+  border-radius: 4px;
+  padding: 28px 30px 26px;
+  color: #ffffff;
+}
+
+.sensor-chart-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.sensor-chart-header h2 {
+  margin: 0 0 24px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.sensor-stats {
+  display: flex;
+  gap: 42px;
+}
+
+.sensor-stats p {
+  margin: 0 0 8px;
+  color: #c7d9ee;
+  font-size: 14px;
+}
+
+.sensor-stats strong {
+  font-size: 17px;
+  color: #ffffff;
+}
+
+.sensor-stats span {
+  color: #20d49b;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.chart-toolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dark-select {
+  height: 34px;
+  background: #223143;
+  color: #d7e7f7;
+  border: 1px solid #33485f;
+  border-radius: 5px;
+  padding: 0 12px;
+  outline: none;
+}
+
+.dark-export-btn {
+  height: 34px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.dark-export-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sensor-chart-body {
+  width: 100%;
+  height: 330px;
+}
+
+.dark-empty-chart {
+  height: 330px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  border: 1px dashed #33485f;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.2);
+}
+
+.light-stats {
+  display: flex;
+  gap: 36px;
+  margin-top: 16px;
+}
+
+.light-stats div p {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.light-stats div strong {
+  font-size: 18px;
+  color: var(--text);
+}
+
+.light-stats div span {
+  margin-left: 8px;
+  color: #10b981;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.improved-chart {
+  margin-top: 18px;
+  height: 340px;
+}
+
+.recharts-cartesian-grid line {
+  opacity: 0.75;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.recharts-surface {
+  overflow: visible;
+}
