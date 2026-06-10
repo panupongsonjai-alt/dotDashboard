@@ -13,7 +13,7 @@ import {
 import {
   auth,
   listenUserDevices,
-  listenDeviceData,
+  listenDeviceHistory24h,
 } from '../services/firebase'
 
 function ChartWidget() {
@@ -30,7 +30,7 @@ function ChartWidget() {
       setDevices(deviceList)
 
       if (!selectedDeviceId && deviceList.length > 0) {
-        setSelectedDeviceId(deviceList[0].deviceId || deviceList[0].id)
+        setSelectedDeviceId(deviceList[0].id)
       }
     })
 
@@ -38,34 +38,35 @@ function ChartWidget() {
   }, [selectedDeviceId])
 
   useEffect(() => {
-    if (!selectedDeviceId) return
+    const user = auth.currentUser
+    if (!user || !selectedDeviceId) return
 
-    const unsubscribe = listenDeviceData(selectedDeviceId, (data) => {
-      if (!data) return
+    const unsubscribe = listenDeviceHistory24h(
+      user.uid,
+      selectedDeviceId,
+      (logs) => {
+        const points = logs.map((item) => ({
+          time: new Date(item.createdAt).toLocaleTimeString('th-TH', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          temperature: Number(item.temperature ?? 0),
+          humidity: Number(item.humidity ?? 0),
+        }))
 
-      const now = new Date()
+        setChartData(points)
 
-      const point = {
-        time: now.toLocaleTimeString('th-TH', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        }),
-        temperature: Number(data.temperature ?? 0),
-        humidity: Number(data.humidity ?? 0),
+        if (logs.length > 0) {
+          const latest = logs[logs.length - 1]
+
+          setCurrentData({
+            temperature: latest.temperature,
+            humidity: latest.humidity,
+            status: latest.status || 'online',
+          })
+        }
       }
-
-      setCurrentData({
-        temperature: point.temperature,
-        humidity: point.humidity,
-        status: data.status || 'offline',
-      })
-
-      setChartData((prev) => {
-        const next = [...prev, point]
-        return next.slice(-15)
-      })
-    })
+    )
 
     return () => unsubscribe()
   }, [selectedDeviceId])
@@ -75,7 +76,7 @@ function ChartWidget() {
       <div className="section-title chart-title-row">
         <div>
           <h2>Sensor Activity</h2>
-          <p>กราฟ Realtime จากค่า Temperature และ Humidity</p>
+          <p>กราฟย้อนหลัง 24 ชั่วโมง จากค่า Temperature และ Humidity</p>
         </div>
 
         <select
@@ -91,10 +92,7 @@ function ChartWidget() {
             <option value="">ยังไม่มี Device</option>
           ) : (
             devices.map((device) => (
-              <option
-                key={device.id}
-                value={device.deviceId || device.id}
-              >
+              <option key={device.id} value={device.id}>
                 {device.name || device.id}
               </option>
             ))
@@ -105,12 +103,12 @@ function ChartWidget() {
       {currentData && (
         <div className="sensor-stat-grid">
           <div className="sensor-stat-card">
-            <span>Temperature</span>
+            <span>Temperature ล่าสุด</span>
             <strong>{currentData.temperature}°C</strong>
           </div>
 
           <div className="sensor-stat-card">
-            <span>Humidity</span>
+            <span>Humidity ล่าสุด</span>
             <strong>{currentData.humidity}%</strong>
           </div>
 
@@ -131,7 +129,7 @@ function ChartWidget() {
 
       {chartData.length === 0 ? (
         <div className="empty-chart">
-          รอข้อมูล Sensor จาก Device...
+          รอข้อมูล History จาก Device...
         </div>
       ) : (
         <div className="realtime-chart">

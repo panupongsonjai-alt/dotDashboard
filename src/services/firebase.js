@@ -7,6 +7,10 @@ import {
   set,
   push,
   remove,
+  query,
+  orderByChild,
+  startAt,
+  limitToLast,
 } from 'firebase/database'
 
 const firebaseConfig = {
@@ -24,11 +28,36 @@ const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const database = getDatabase(app)
 
-export const listenDeviceData = (deviceId, callback) => {
-  const deviceRef = ref(database, `devices/${deviceId}`)
+export const listenDeviceData = (uid, deviceId, callback) => {
+  const deviceRef = ref(database, `users/${uid}/devices/${deviceId}`)
 
   return onValue(deviceRef, (snapshot) => {
     callback(snapshot.val())
+  })
+}
+
+export const listenDeviceHistory24h = (uid, deviceId, callback) => {
+  const now = Date.now()
+  const last24h = now - 24 * 60 * 60 * 1000
+
+  const historyRef = query(
+    ref(database, `users/${uid}/deviceHistory/${deviceId}`),
+    orderByChild('createdAt'),
+    startAt(last24h),
+    limitToLast(300)
+  )
+
+  return onValue(historyRef, (snapshot) => {
+    const data = snapshot.val() || {}
+
+    const logs = Object.entries(data)
+      .map(([id, value]) => ({
+        id,
+        ...value,
+      }))
+      .sort((a, b) => a.createdAt - b.createdAt)
+
+    callback(logs)
   })
 }
 
@@ -46,7 +75,6 @@ export const addSensorLog = async (deviceId, payload) => {
   })
 }
 
-// เพิ่ม Device
 export const addUserDevice = async (uid, name) => {
   const devicesRef = ref(database, `users/${uid}/devices`)
   const newDeviceRef = push(devicesRef)
@@ -59,7 +87,6 @@ export const addUserDevice = async (uid, name) => {
   })
 }
 
-// ฟังรายการ Device
 export const listenUserDevices = (uid, callback) => {
   const devicesRef = ref(database, `users/${uid}/devices`)
 
@@ -75,7 +102,6 @@ export const listenUserDevices = (uid, callback) => {
   })
 }
 
-// ลบ Device
 export const deleteUserDevice = async (uid, deviceId) => {
   return remove(ref(database, `users/${uid}/devices/${deviceId}`))
 }
