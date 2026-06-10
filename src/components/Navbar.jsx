@@ -1,47 +1,43 @@
-import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, LogOut, Bell, Search } from "lucide-react";
 
 function Navbar({ user, onLogout, theme, setTheme }) {
-  const [projectName, setProjectName] = useState("dotWatch");
-
-  useEffect(() => {
-    const name =
-      localStorage.getItem("projectName") || "dotWatch";
-
-    setProjectName(name);
-  }, []);
-
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
-    <header className="navbar">
-      <div>
-        <h1>{projectName}</h1>
-        <p>{user?.email}</p>
+    <header className="top-header">
+      <div className="header-search">
+        <Search size={18} />
+        <input placeholder="Search or type command..." />
       </div>
 
-      <div className="navbar-actions">
-        <button
-          type="button"
-          className="theme-toggle"
-          onClick={toggleTheme}
-          title={theme === "dark" ? "Light mode" : "Dark mode"}
-        >
-          {theme === "dark" ? (
-            <Sun size={20} />
-          ) : (
-            <Moon size={20} />
-          )}
+      <div className="header-actions">
+        <button type="button" className="icon-button" onClick={toggleTheme}>
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
         </button>
+
+        <button type="button" className="icon-button">
+          <Bell size={18} />
+        </button>
+
+        <div className="user-box">
+          <div className="user-avatar">
+            {user?.email?.charAt(0).toUpperCase() || "U"}
+          </div>
+
+          <div className="user-info">
+            <strong>{user?.displayName || "dotWatch User"}</strong>
+            <small>{user?.email}</small>
+          </div>
+        </div>
 
         <button
           type="button"
-          className="ghost-button"
+          className="icon-button logout-icon"
           onClick={onLogout}
         >
-          Logout
+          <LogOut size={18} />
         </button>
       </div>
     </header>
