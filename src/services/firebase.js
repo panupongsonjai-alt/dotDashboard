@@ -6,6 +6,7 @@ import {
   onValue,
   set,
   push,
+  remove,
 } from 'firebase/database'
 
 const firebaseConfig = {
@@ -43,6 +44,40 @@ export const addSensorLog = async (deviceId, payload) => {
     ...payload,
     createdAt: Date.now(),
   })
+}
+
+// เพิ่ม Device
+export const addUserDevice = async (uid, name) => {
+  const devicesRef = ref(database, `users/${uid}/devices`)
+  const newDeviceRef = push(devicesRef)
+
+  return set(newDeviceRef, {
+    name,
+    deviceId: newDeviceRef.key,
+    status: 'offline',
+    createdAt: Date.now(),
+  })
+}
+
+// ฟังรายการ Device
+export const listenUserDevices = (uid, callback) => {
+  const devicesRef = ref(database, `users/${uid}/devices`)
+
+  return onValue(devicesRef, (snapshot) => {
+    const data = snapshot.val() || {}
+
+    const devices = Object.entries(data).map(([id, value]) => ({
+      id,
+      ...value,
+    }))
+
+    callback(devices)
+  })
+}
+
+// ลบ Device
+export const deleteUserDevice = async (uid, deviceId) => {
+  return remove(ref(database, `users/${uid}/devices/${deviceId}`))
 }
 
 export default app
