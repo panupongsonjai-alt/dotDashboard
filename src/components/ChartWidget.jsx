@@ -162,7 +162,10 @@ function ChartWidget() {
     <section className="realtime-graph-section">
       <div className="realtime-graph-card">
         <div className="realtime-graph-header">
-          <h2>Real-Time Graph</h2>
+          <div className="realtime-graph-title">
+            <h2>Real Time Graph</h2>
+            <p>กราฟแสดงแสดงข้อมูลในวันและเวลา ณ ปัจจุบัน</p>
+          </div>
 
           <div className="realtime-graph-stats">
             <div className="realtime-stat">
@@ -193,7 +196,7 @@ function ChartWidget() {
           </div>
         ) : (
           <div className="realtime-chart-box">
-            <ResponsiveContainer width="100%" height={520}>
+            <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={chartData}
                 margin={{ top: 12, right: 24, left: 0, bottom: 8 }}

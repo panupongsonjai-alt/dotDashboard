@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import DeviceCard from '../components/DeviceCard.jsx'
+import DashboardDeviceCard from '../components/DashboardDeviceCard.jsx'
 import ChartWidget from '../components/ChartWidget.jsx'
 
 import {
@@ -63,7 +63,7 @@ function Dashboard() {
 
         <div className="device-grid">
           {devices.map((device) => (
-            <DeviceCard
+            <DashboardDeviceCard
               key={device.id}
               device={device}
             />

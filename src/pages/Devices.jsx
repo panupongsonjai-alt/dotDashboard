@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import DeviceCard from '../components/DeviceCard.jsx'
+
 import {
   auth,
   addUserDevice,
