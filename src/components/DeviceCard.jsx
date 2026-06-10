@@ -9,7 +9,13 @@ function DeviceCard({ device }) {
           <p>{device.deviceId || device.id}</p>
         </div>
 
-        <span className={device.status === 'online' ? 'status online' : 'status offline'}>
+        <span
+          className={
+            device.status === 'online'
+              ? 'status online'
+              : 'status offline'
+          }
+        >
           {device.status || 'offline'}
         </span>
       </div>
@@ -17,19 +23,34 @@ function DeviceCard({ device }) {
       <div className="metrics-grid">
         <div className="metric">
           <Thermometer size={18} />
-          <span>{device.temperature ?? '--'}°C</span>
+          <span>
+            {device.temperature != null
+              ? Number(device.temperature).toFixed(1)
+              : '--'}
+            °C
+          </span>
           <small>Temp</small>
         </div>
 
         <div className="metric">
           <Droplets size={18} />
-          <span>{device.humidity ?? '--'}%</span>
+          <span>
+            {device.humidity != null
+              ? Number(device.humidity).toFixed(1)
+              : '--'}
+            %
+          </span>
           <small>Humidity</small>
         </div>
 
         <div className="metric">
           <Battery size={18} />
-          <span>{device.battery ?? '--'}%</span>
+          <span>
+            {device.battery != null
+              ? Number(device.battery).toFixed(1)
+              : '--'}
+            %
+          </span>
           <small>Battery</small>
         </div>
       </div>
