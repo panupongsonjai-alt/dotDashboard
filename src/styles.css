@@ -958,3 +958,153 @@ select:focus {
 .recharts-surface {
   overflow: visible;
 }
+
+.zoom-buttons {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.zoom-btn {
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.zoom-btn.active {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.export-select {
+  height: 40px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 0 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.export-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chart-scroll-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+}
+
+.chart-scroll-wrap::-webkit-scrollbar {
+  height: 8px;
+}
+
+.chart-scroll-wrap::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.chart-scroll-wrap::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+
+.chart-zoom-inner {
+  min-width: 100%;
+  height: 330px;
+}
+
+.clean-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clean-select {
+  height: 42px;
+  min-width: 170px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 0 14px;
+  outline: none;
+  font-weight: 600;
+}
+
+.csv-export-btn {
+  height: 42px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25);
+  transition: 0.2s ease;
+}
+
+.csv-export-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.32);
+}
+
+.csv-export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.light-stats {
+  display: flex;
+  gap: 36px;
+  margin-top: 16px;
+}
+
+.light-stats div p {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.light-stats div strong {
+  font-size: 18px;
+  color: var(--text);
+}
+
+.light-stats div span {
+  margin-left: 8px;
+  color: #10b981;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.improved-chart {
+  margin-top: 18px;
+  height: 370px;
+}
+
+.recharts-cartesian-grid line {
+  opacity: 0.75;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.recharts-surface {
+  overflow: visible;
+}

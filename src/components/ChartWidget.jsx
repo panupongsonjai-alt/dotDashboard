@@ -15,70 +15,23 @@ import {
   listenDeviceHistoryByDate,
 } from '../services/firebase'
 
-const RANGE_OPTIONS = [
-  { label: 'วันนี้', value: 'today' },
-  { label: 'เมื่อวาน', value: 'yesterday' },
-  { label: '7 วัน', value: '7d' },
-  { label: '30 วัน', value: '30d' },
-]
+function getTodayRange() {
+  const start = new Date()
+  start.setHours(0, 0, 0, 0)
 
-function getDateRange(range) {
-  const now = new Date()
-
-  if (range === 'today') {
-    const start = new Date()
-    start.setHours(0, 0, 0, 0)
-
-    const end = new Date()
-    end.setHours(23, 59, 59, 999)
-
-    return { startTime: start.getTime(), endTime: end.getTime() }
-  }
-
-  if (range === 'yesterday') {
-    const start = new Date()
-    start.setDate(start.getDate() - 1)
-    start.setHours(0, 0, 0, 0)
-
-    const end = new Date(start)
-    end.setHours(23, 59, 59, 999)
-
-    return { startTime: start.getTime(), endTime: end.getTime() }
-  }
-
-  if (range === '7d') {
-    return {
-      startTime: Date.now() - 7 * 24 * 60 * 60 * 1000,
-      endTime: Date.now(),
-    }
-  }
-
-  if (range === '30d') {
-    return {
-      startTime: Date.now() - 30 * 24 * 60 * 60 * 1000,
-      endTime: Date.now(),
-    }
-  }
+  const end = new Date()
+  end.setHours(23, 59, 59, 999)
 
   return {
-    startTime: now.getTime(),
-    endTime: now.getTime(),
+    startTime: start.getTime(),
+    endTime: end.getTime(),
   }
 }
 
-function formatXAxis(value, range) {
-  const date = new Date(value)
-
-  if (range === 'today' || range === 'yesterday') {
-    return date.toLocaleTimeString('th-TH', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
-
-  return date.toLocaleDateString('th-TH', {
-    day: '2-digit',
-    month: 'short',
+function formatXAxis(value) {
+  return new Date(value).toLocaleTimeString('th-TH', {
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 
@@ -97,28 +50,24 @@ function makeDayTicks(startTime, endTime) {
   return ticks
 }
 
+function getAverage(data, key) {
+  if (data.length === 0) return '--'
+  const total = data.reduce((sum, item) => sum + Number(item[key] || 0), 0)
+  return (total / data.length).toFixed(1)
+}
+
 function ChartWidget() {
   const [devices, setDevices] = useState([])
   const [selectedDeviceId, setSelectedDeviceId] = useState('')
-  const [timeRange, setTimeRange] = useState('today')
   const [chartData, setChartData] = useState([])
 
-  const { startTime, endTime } = useMemo(() => {
-    return getDateRange(timeRange)
-  }, [timeRange])
+  const { startTime, endTime } = useMemo(() => getTodayRange(), [])
+  const xTicks = useMemo(() => makeDayTicks(startTime, endTime), [startTime, endTime])
 
   const selectedDeviceName = useMemo(() => {
     const device = devices.find((item) => item.id === selectedDeviceId)
     return device?.name || selectedDeviceId || 'device'
   }, [devices, selectedDeviceId])
-
-  const xTicks = useMemo(() => {
-    if (timeRange === 'today' || timeRange === 'yesterday') {
-      return makeDayTicks(startTime, endTime)
-    }
-
-    return undefined
-  }, [timeRange, startTime, endTime])
 
   const latestData = chartData[chartData.length - 1]
 
@@ -186,7 +135,7 @@ function ChartWidget() {
     const link = document.createElement('a')
 
     link.href = url
-    link.download = `${selectedDeviceName}-${timeRange}-history.csv`
+    link.download = `${selectedDeviceName}-today-history.csv`
     link.click()
 
     URL.revokeObjectURL(url)
@@ -197,34 +146,26 @@ function ChartWidget() {
       <div className="section-title chart-title-row">
         <div>
           <h2>Sensor Activity</h2>
-          <p>
-            กราฟ History จากค่า Temperature และ Humidity
-            {timeRange === 'today' && ' วันนี้ 00:00 - 23:59'}
-            {timeRange === 'yesterday' && ' เมื่อวาน 00:00 - 23:59'}
-          </p>
+          <p>กราฟ History จากค่า Temperature และ Humidity วันนี้ 00:00 - 23:59</p>
 
           <div className="sensor-stats light-stats">
             <div>
               <p>Temperature</p>
-              <strong>
-                {latestData ? latestData.temperature.toFixed(1) : '--'}°C
-              </strong>
-              <span>Realtime</span>
+              <strong>{latestData ? latestData.temperature.toFixed(1) : '--'}°C</strong>
+              <span>Avg {getAverage(chartData, 'temperature')}°C</span>
             </div>
 
             <div>
               <p>Humidity</p>
-              <strong>
-                {latestData ? latestData.humidity.toFixed(1) : '--'}%
-              </strong>
-              <span>Realtime</span>
+              <strong>{latestData ? latestData.humidity.toFixed(1) : '--'}%</strong>
+              <span>Avg {getAverage(chartData, 'humidity')}%</span>
             </div>
           </div>
         </div>
 
-        <div className="chart-toolbar">
+        <div className="chart-toolbar clean-toolbar">
           <select
-            className="device-select"
+            className="device-select clean-select"
             value={selectedDeviceId}
             onChange={(e) => {
               setSelectedDeviceId(e.target.value)
@@ -242,23 +183,9 @@ function ChartWidget() {
             )}
           </select>
 
-          <select
-            className="range-select"
-            value={timeRange}
-            onChange={(e) => {
-              setTimeRange(e.target.value)
-              setChartData([])
-            }}
-          >
-            {RANGE_OPTIONS.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-
           <button
-            className="export-btn"
+            className="csv-export-btn"
+            type="button"
             onClick={exportCSV}
             disabled={chartData.length === 0}
           >
@@ -268,12 +195,10 @@ function ChartWidget() {
       </div>
 
       {chartData.length === 0 ? (
-        <div className="empty-chart">
-          รอข้อมูล History จาก Device...
-        </div>
+        <div className="empty-chart">รอข้อมูล History จาก Device...</div>
       ) : (
         <div className="realtime-chart improved-chart">
-          <ResponsiveContainer width="100%" height={330}>
+          <ResponsiveContainer width="100%" height={360}>
             <AreaChart
               data={chartData}
               margin={{ top: 20, right: 24, left: 0, bottom: 8 }}
@@ -301,7 +226,7 @@ function ChartWidget() {
                 type="number"
                 domain={[startTime, endTime]}
                 ticks={xTicks}
-                tickFormatter={(value) => formatXAxis(value, timeRange)}
+                tickFormatter={formatXAxis}
                 tickLine={false}
                 axisLine={false}
                 minTickGap={26}
@@ -325,13 +250,14 @@ function ChartWidget() {
                 contentStyle={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
-                  borderRadius: 12,
+                  borderRadius: 14,
                   color: '#0f172a',
-                  boxShadow: '0 16px 40px rgba(15,23,42,0.14)',
+                  boxShadow: '0 18px 45px rgba(15,23,42,0.16)',
                 }}
                 labelStyle={{
                   color: '#475569',
-                  fontWeight: 600,
+                  fontWeight: 700,
+                  marginBottom: 6,
                 }}
                 labelFormatter={(value) =>
                   new Date(value).toLocaleString('th-TH')
