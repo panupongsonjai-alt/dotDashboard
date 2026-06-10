@@ -39,6 +39,11 @@ function Dashboard() {
     <div className="page">
       <section className="summary-grid">
         <div className="summary-card">
+          <span>Project</span>
+          <strong>{projectName}</strong>
+        </div>        
+        
+        <div className="summary-card">
           <span>Total Devices</span>
           <strong>{devices.length}</strong>
         </div>
@@ -53,10 +58,6 @@ function Dashboard() {
           <strong>{devices.length - onlineCount}</strong>
         </div>
 
-        <div className="summary-card">
-          <span>Project</span>
-          <strong>{projectName}</strong>
-        </div>
       </section>
 
       <ChartWidget />
