@@ -13,21 +13,15 @@ function Dashboard() {
 
   useEffect(() => {
     const user = auth.currentUser
-
     if (!user) return
 
-    const unsubscribe = listenUserDevices(
-      user.uid,
-      setDevices
-    )
+    const unsubscribe = listenUserDevices(user.uid, setDevices)
 
     return () => unsubscribe()
   }, [])
 
   useEffect(() => {
-    const name =
-      localStorage.getItem('projectName') || 'dotWatch'
-
+    const name = localStorage.getItem('projectName') || 'dotWatch'
     setProjectName(name)
   }, [])
 
@@ -38,11 +32,6 @@ function Dashboard() {
   return (
     <div className="page">
       <section className="summary-grid">
-        <div className="summary-card">
-          <span>Project</span>
-          <strong>{projectName}</strong>
-        </div>        
-        
         <div className="summary-card">
           <span>Total Devices</span>
           <strong>{devices.length}</strong>
@@ -58,6 +47,10 @@ function Dashboard() {
           <strong>{devices.length - onlineCount}</strong>
         </div>
 
+        <div className="summary-card">
+          <span>Project</span>
+          <strong>{projectName}</strong>
+        </div>
       </section>
 
       <ChartWidget />

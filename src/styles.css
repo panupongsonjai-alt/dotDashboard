@@ -756,3 +756,76 @@ select:focus {
     display: none;
   }
 }
+
+.chart-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.device-select {
+  max-width: 220px;
+}
+
+.sensor-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.sensor-stat-card {
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--input);
+  border: 1px solid var(--border);
+}
+
+.sensor-stat-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.sensor-stat-card strong {
+  font-size: 22px;
+}
+
+.sensor-online {
+  color: #22c55e;
+}
+
+.sensor-offline {
+  color: #ef4444;
+}
+
+.realtime-chart {
+  width: 100%;
+  height: 280px;
+}
+
+.empty-chart {
+  height: 280px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 18px;
+}
+
+@media (max-width: 560px) {
+  .chart-title-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .device-select {
+    max-width: 100%;
+  }
+
+  .sensor-stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
