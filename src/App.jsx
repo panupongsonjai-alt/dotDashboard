@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Devices from "./pages/Devices";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
@@ -47,6 +48,7 @@ function App() {
         {page === "dashboard" && <Dashboard />}
         {page === "devices" && <Devices />}
         {page === "settings" && <Settings />}
+        {page === "profile" && <Profile />}
       </main>
     </div>
   );

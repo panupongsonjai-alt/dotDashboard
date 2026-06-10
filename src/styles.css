@@ -389,3 +389,31 @@ select:focus {
     grid-template-columns: 1fr;
   }
 }
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.profile-info h3 {
+  margin: 0 0 6px;
+}
+
+.profile-info p {
+  margin: 0 0 6px;
+}

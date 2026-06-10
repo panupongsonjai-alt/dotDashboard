@@ -3,6 +3,7 @@ function Sidebar({ page, setPage }) {
     { id: "dashboard", label: "Dashboard", icon: "📊" },
     { id: "devices", label: "Devices", icon: "📡" },
     { id: "settings", label: "Settings", icon: "⚙️" },
+    { id: "profile", label: "Profile", icon: "👤" },
   ];
 
   return (
